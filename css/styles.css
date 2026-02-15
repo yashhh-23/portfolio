@@ -172,29 +172,32 @@ ul {
     margin-bottom: 30px;
     display: flex;
     justify-content: center;
-}
-
-.profile-image-placeholder {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    position: relative;
     overflow: hidden;
+    /* Clip the scaled-up image */
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
 }
 
-.profile-image-placeholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+.profile-image-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.35);
+    /* Zoom into the circular photo content */
+    object-position: center center;
 }
+
+/* Removed pseudo-element overlay as we now have a real image */
 
 .hero-title {
     font-size: 4rem;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     line-height: 1.1;
     letter-spacing: -1px;
 }
@@ -211,7 +214,8 @@ ul {
     font-size: 1.2rem;
     color: var(--text-secondary);
     max-width: 600px;
-    margin: 0 auto 40px;
+    margin: 20px auto 40px;
+    /* Added top margin */
 }
 
 /* Buttons */

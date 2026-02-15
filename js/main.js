@@ -162,7 +162,7 @@ if (typeof gsap !== 'undefined') {
     });
 
     // Projects Stagger
-    // Projects Stagger - REMOVED to fix visibility issues
+    // REMOVED to fix visibility issues
     /*
     gsap.from(".project-card", {
         scrollTrigger: {
@@ -201,21 +201,22 @@ if (typeof gsap !== 'undefined') {
         ease: "back.out(1.7)"
     });
 
-    // Antigravity Float Effect
-    gsap.to(".profile-image-placeholder", {
+    // Antigravity Float Effect - target the wrapper so the whole circle floats
+    gsap.to(".profile-image-wrapper", {
         y: 15,
         duration: 2,
         repeat: -1,
         yoyo: true,
-        ease: "sine.inOut"
+        ease: "sine.inOut",
+        delay: 1.6 // Start in sync with title
     });
 
     gsap.to(".hero-title", {
-        y: 10,
-        duration: 3,
+        y: 12,
+        duration: 2,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        delay: 0.5
+        delay: 1.6 // Start AFTER entrance animation (0.5 + 1.0 = 1.5s)
     });
 }
