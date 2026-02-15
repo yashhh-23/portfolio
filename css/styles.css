@@ -277,6 +277,85 @@ ul {
     box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
 }
 
+/* Core Technologies Section */
+.technologies-section {
+    padding: 80px 0;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+}
+
+.tech-category {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 28px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.tech-category.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tech-category:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+    transform: translateY(-3px);
+}
+
+.tech-category-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tech-list li {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding: 6px 0;
+    position: relative;
+    padding-left: 16px;
+}
+
+.tech-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* Work Section */
 .section-title {
     font-size: 2.5rem;

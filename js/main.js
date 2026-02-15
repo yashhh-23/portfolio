@@ -161,21 +161,33 @@ if (typeof gsap !== 'undefined') {
         ease: "power2.out"
     });
 
-    // Projects Stagger
-    // REMOVED to fix visibility issues
-    /*
-    gsap.from(".project-card", {
-        scrollTrigger: {
-            trigger: ".projects-grid",
-            start: "top 75%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out"
-    });
-    */
+    // Tech Categories – Reveal on Scroll (CSS-driven)
+    const techCards = document.querySelectorAll(".tech-category");
+    const techObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add("visible");
+                }, index * 120);
+                techObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    techCards.forEach(card => techObserver.observe(card));
+
+    // Project Cards – Reveal on Scroll (CSS-driven)
+    const projectCards = document.querySelectorAll(".project-card");
+    const projectObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add("visible");
+                }, index * 150);
+                projectObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    projectCards.forEach(card => projectObserver.observe(card));
 
     // About/Contact Reveal
     gsap.from(".about-text p", {
