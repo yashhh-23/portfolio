@@ -277,6 +277,30 @@ ul {
     box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
 }
 
+.cv-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-cv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.btn-cv:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent-color);
+    transform: translateX(5px);
+}
+
 /* Core Technologies Section */
 .technologies-section {
     padding: 80px 0;
