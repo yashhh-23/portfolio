@@ -1,0 +1,8 @@
+{
+  "name": "yash-dedhia",
+  "version": 2,
+  "public": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
