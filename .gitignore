@@ -1,3 +1,16 @@
-.vercel
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel/
 .env*.local
-node_modules
+
+# Audit output
+audit-output.txt
+
+# Old verification files
+google758261e05df203fc.html
+
+# OS files
+.DS_Store
+Thumbs.db
