@@ -16,6 +16,12 @@
     /* Spacing */
     --container-width: 1200px;
     --section-padding: 120px 0;
+
+    /* Safe areas for notch devices */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
 *,
@@ -26,6 +32,10 @@
     padding: 0;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
@@ -33,6 +43,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
 }
 
 /* Utilities */
@@ -40,8 +51,11 @@ body {
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px;
+    padding-left: max(20px, var(--safe-area-left));
+    padding-right: max(20px, var(--safe-area-right));
     position: relative;
     z-index: 2;
+    width: 100%;
 }
 
 .section {
@@ -102,8 +116,10 @@ ul {
     left: 0;
     width: 100%;
     padding: 20px 0;
+    padding-top: max(20px, var(--safe-area-top));
     background: rgba(10, 10, 10, 0.8);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 100;
     border-bottom: 1px solid var(--border-color);
 }
@@ -120,6 +136,7 @@ ul {
     letter-spacing: 1px;
     color: var(--text-secondary);
     position: relative;
+    white-space: nowrap;
 }
 
 .nav-link.active,
@@ -139,6 +156,44 @@ ul {
     background-color: var(--accent-color);
     border-radius: 50%;
     box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Hamburger Menu Button */
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 110;
+    position: relative;
+}
+
+.hamburger-btn span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile nav overlay */
+.mobile-nav-overlay {
+    display: none;
 }
 
 /* Hero Section */
@@ -195,11 +250,13 @@ ul {
 /* Removed pseudo-element overlay as we now have a real image */
 
 .hero-title {
-    font-size: 4rem;
+    font-size: clamp(2rem, 6vw, 4rem);
     font-weight: 700;
     margin-bottom: 40px;
     line-height: 1.1;
     letter-spacing: -1px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .hero-title .highlight {
@@ -382,10 +439,12 @@ ul {
 
 /* Work Section */
 .section-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
     margin-bottom: 60px;
     position: relative;
     display: inline-block;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .section-title::after {
@@ -496,7 +555,7 @@ ul {
 }
 
 .contact-headline {
-    font-size: 3rem;
+    font-size: clamp(1.8rem, 5vw, 3rem);
     margin-bottom: 40px;
 }
 
@@ -538,25 +597,86 @@ ul {
     transform: scale(1.1);
 }
 
-/* Responsive */
+/* ===== RESPONSIVE: Tablet (max-width: 768px) ===== */
 @media (max-width: 768px) {
+    /* Mobile Navigation */
+    .hamburger-btn {
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .fixed-nav {
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fixed-nav nav {
+        width: 100%;
+        position: relative;
+    }
+
+    .nav-list {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        background: rgba(10, 10, 10, 0.97);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 105;
+    }
+
+    .nav-list.mobile-open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-list .nav-link {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+    }
+
+    /* Hero */
     .hero-section {
         min-height: auto;
+        min-height: 100dvh;
         padding-top: 100px;
         padding-bottom: 60px;
     }
 
     .hero-title {
-        font-size: 2.5rem;
+        font-size: clamp(1.8rem, 7vw, 2.5rem);
         margin-bottom: 20px;
     }
 
+    .hero-title br {
+        display: none;
+    }
+
     .hero-tagline {
-        font-size: 1rem;
+        font-size: 0.95rem;
         margin: 10px auto 30px;
+        padding: 0 10px;
     }
 
     .profile-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
         margin-bottom: 20px;
         font-size: 0.75rem;
     }
@@ -568,27 +688,64 @@ ul {
     }
 
     .cta-group {
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
         gap: 12px;
     }
 
     .btn {
         padding: 12px 24px;
         font-size: 0.8rem;
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
     }
 
+    /* Sections */
     .section {
         padding: 60px 0;
     }
 
-    .timeline-item,
+    .section-title {
+        font-size: clamp(1.4rem, 5vw, 2rem);
+        margin-bottom: 40px;
+    }
+
+    .section-title::after {
+        display: none;
+    }
+
+    /* About */
     .about-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 30px;
+    }
+
+    .about-text p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .about-actions {
+        width: 100%;
+    }
+
+    .btn-cv {
+        padding: 16px;
+    }
+
+    .btn-block {
+        padding: 16px;
+    }
+
+    /* Timeline / Work */
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .timeline-left {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
 
     .timeline-grid {
@@ -597,11 +754,143 @@ ul {
 
     .timeline-item::before {
         left: -25px;
+        width: 7px;
+        height: 7px;
     }
 
-    .nav-list {
+    .role-title {
+        font-size: 1.05rem;
+    }
+
+    .role-description {
+        font-size: 0.9rem;
+    }
+
+    /* Contact */
+    .contact-headline {
+        font-size: clamp(1.6rem, 6vw, 2.5rem);
+    }
+
+    .contact-cards {
         gap: 15px;
+    }
+
+    .contact-card {
+        width: 52px;
+        height: 52px;
+    }
+
+    .contact-card svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* ===== RESPONSIVE: Small Mobile (max-width: 480px) ===== */
+@media (max-width: 480px) {
+    .container {
+        padding-left: max(16px, var(--safe-area-left));
+        padding-right: max(16px, var(--safe-area-right));
+    }
+
+    .hero-section {
+        padding-top: 80px;
+        padding-bottom: 40px;
+    }
+
+    .hero-title {
+        font-size: clamp(1.5rem, 8vw, 2rem);
+        margin-bottom: 16px;
+    }
+
+    .hero-tagline {
+        font-size: 0.85rem;
+        margin: 8px auto 24px;
+    }
+
+    .profile-image-wrapper {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 16px;
+    }
+
+    .section {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+        margin-bottom: 30px;
+    }
+
+    .about-text p {
+        font-size: 0.9rem;
+        margin-bottom: 18px;
+    }
+
+    .timeline-grid {
+        padding-left: 16px;
+        gap: 24px;
+    }
+
+    .timeline-item {
+        padding-bottom: 24px;
+        gap: 8px;
+    }
+
+    .timeline-item::before {
+        left: -21px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .company-name {
+        font-size: 0.95rem;
+    }
+
+    .duration {
+        font-size: 0.8rem;
+    }
+
+    .role-title {
+        font-size: 0.95rem;
+    }
+
+    .role-description {
+        font-size: 0.85rem;
+    }
+
+    .tech-category {
+        padding: 20px;
+    }
+
+    .tech-category-title {
         font-size: 0.75rem;
+    }
+
+    .tech-list li {
+        font-size: 0.85rem;
+        padding: 4px 0;
+        padding-left: 14px;
+    }
+
+    .contact-headline {
+        font-size: clamp(1.4rem, 7vw, 2rem);
+        margin-bottom: 30px;
+    }
+
+    .btn-cv,
+    .btn-block {
+        padding: 14px;
+        font-size: 0.85rem;
+    }
+
+    .footer-text {
+        font-size: 0.78rem;
+    }
+
+    .footer-links {
+        font-size: 0.78rem;
     }
 }
 

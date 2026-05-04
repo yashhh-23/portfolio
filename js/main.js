@@ -1,7 +1,27 @@
 console.log("Portfolio loaded");
 
-// Mobile Navigation Toggle (Future Implementation)
-// ...
+// Mobile Navigation Toggle
+const hamburgerBtn = document.querySelector('.hamburger-btn');
+const navList = document.querySelector('.nav-list');
+
+if (hamburgerBtn && navList) {
+    hamburgerBtn.addEventListener('click', () => {
+        const isOpen = navList.classList.toggle('mobile-open');
+        hamburgerBtn.classList.toggle('active');
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Close menu when a nav link is clicked
+    navList.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navList.classList.remove('mobile-open');
+            hamburgerBtn.classList.remove('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        });
+    });
+}
 
 // Intersection Observer for Active Navigation
 const sections = document.querySelectorAll("section");

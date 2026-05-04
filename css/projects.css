@@ -107,3 +107,66 @@
     text-decoration: underline;
     text-underline-offset: 4px;
 }
+
+/* ===== Projects Responsive ===== */
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .project-card {
+        padding: 24px;
+    }
+
+    .project-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .project-desc {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .project-tags {
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .project-tags span {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+
+    .project-link {
+        font-size: 0.85rem;
+    }
+
+    /* Disable spotlight blur on mobile (hover doesn't apply well on touch) */
+    .projects-grid:has(.project-card:hover) .project-card:not(:hover) {
+        opacity: 1;
+        filter: none;
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .project-card {
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .project-title {
+        font-size: 1.1rem;
+    }
+
+    .project-desc {
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+    }
+
+    .project-tags span {
+        font-size: 0.65rem;
+    }
+}
