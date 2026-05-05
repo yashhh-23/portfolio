@@ -271,3 +271,118 @@ if (typeof gsap !== 'undefined') {
         });
     }
 }
+
+// UX Enhancements (Progress Bar, Back to Top, Contact Form)
+document.addEventListener('DOMContentLoaded', () => {
+    const progressBar = document.getElementById('scroll-progress');
+    const backToTopBtn = document.getElementById('back-to-top');
+
+    // Scroll Events
+    window.addEventListener('scroll', () => {
+        // Progress Bar logic
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        if (progressBar) {
+            progressBar.style.width = scrolled + "%";
+        }
+
+        // Back to Top button logic
+        if (winScroll > 300) {
+            if (backToTopBtn) backToTopBtn.classList.add('visible');
+        } else {
+            if (backToTopBtn) backToTopBtn.classList.remove('visible');
+        }
+    });
+
+    // Back to Top Click
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // Contact Form Handler
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            if(name && email && message) {
+                // Construct mailto link
+                const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
+                const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+                
+                // Show success status temporarily
+                formStatus.textContent = 'Opening email client...';
+                formStatus.className = 'form-status success';
+                
+                // Trigger mailto
+                window.location.href = `mailto:yashdedhia05@gmail.com?subject=${subject}&body=${body}`;
+                
+                setTimeout(() => {
+                    formStatus.textContent = '';
+                    contactForm.reset();
+                }, 3000);
+            } else {
+                formStatus.textContent = 'Please fill out all fields.';
+                formStatus.className = 'form-status error';
+            }
+        });
+    }
+
+    // Custom Cursor Logic
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorOutline = document.getElementById('cursor-outline');
+
+    if (cursorDot && cursorOutline) {
+        // Only run if device supports hover
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                // Move dot instantly
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                // Animate outline with slight delay (using GSAP for smoothness if available, else plain CSS)
+                if (window.gsap) {
+                    gsap.to(cursorOutline, {
+                        x: posX,
+                        y: posY,
+                        duration: 0.15,
+                        ease: "power2.out"
+                    });
+                    // For GSAP, we need to handle transform specifically since we set top/left to 0 in CSS
+                    cursorOutline.style.left = 0;
+                    cursorOutline.style.top = 0;
+                } else {
+                    cursorOutline.style.left = `${posX}px`;
+                    cursorOutline.style.top = `${posY}px`;
+                }
+            });
+
+            // Add hover effect to all links and buttons
+            const interactables = document.querySelectorAll('a, button, input, textarea');
+            interactables.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    document.body.classList.add('hovering');
+                });
+                el.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('hovering');
+                });
+            });
+        }
+    }
+});
