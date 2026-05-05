@@ -698,6 +698,150 @@ ul {
     transform: scale(1.1);
 }
 
+/* GitHub Contributions Section */
+.github-section {
+    padding: 80px 0;
+}
+
+.calendar-wrapper {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 28px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.calendar-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.calendar-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.calendar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.calendar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.3);
+}
+
+/* GitHub Calendar Library Overrides for Dark Theme */
+.calendar {
+    min-width: 700px;
+    font-family: var(--font-main);
+}
+
+.calendar .color-bg-default {
+    background-color: transparent !important;
+}
+
+.calendar .color-fg-muted {
+    color: var(--text-secondary) !important;
+}
+
+.calendar .color-fg-default {
+    color: var(--text-primary) !important;
+}
+
+.calendar .border {
+    border: none !important;
+}
+
+/* Modern GitHub Calendar squares */
+.calendar rect.ContributionCalendar-day[data-level="0"] {
+    fill: #161b22 !important;
+    rx: 2;
+    ry: 2;
+}
+.calendar rect.ContributionCalendar-day[data-level="1"] {
+    fill: rgba(0, 240, 255, 0.25) !important;
+    rx: 2;
+    ry: 2;
+}
+.calendar rect.ContributionCalendar-day[data-level="2"] {
+    fill: rgba(0, 240, 255, 0.5) !important;
+    rx: 2;
+    ry: 2;
+}
+.calendar rect.ContributionCalendar-day[data-level="3"] {
+    fill: rgba(0, 240, 255, 0.75) !important;
+    rx: 2;
+    ry: 2;
+}
+.calendar rect.ContributionCalendar-day[data-level="4"] {
+    fill: rgba(0, 240, 255, 1) !important;
+    rx: 2;
+    ry: 2;
+}
+
+.calendar .ContributionCalendar-label {
+    fill: var(--text-secondary) !important;
+    font-size: 10px;
+}
+
+.calendar .float-left {
+    color: var(--text-secondary) !important;
+    font-size: 12px;
+}
+
+/* Hide the "Less/More" legend and text */
+.calendar .float-right {
+    display: none !important;
+}
+
+/* Tooltip */
+.svg-tip {
+    background: var(--bg-color) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    font-size: 12px !important;
+    font-family: var(--font-main) !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+}
+
+.svg-tip::after {
+    border-top-color: var(--border-color) !important;
+}
+
+/* Fix stats colors and hide broken streaks */
+.calendar .contrib-column {
+    padding: 15px 0;
+    text-align: center;
+}
+
+.calendar .contrib-number {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3em;
+    color: var(--text-primary) !important;
+    display: block;
+}
+
+.calendar .text-muted {
+    color: var(--text-secondary) !important;
+    font-size: 12px;
+}
+
+/* Hide broken streaks (Longest / Current) and Skip to content */
+.calendar .contrib-column:nth-child(2),
+.calendar .contrib-column:nth-child(3),
+.calendar h2.sr-only,
+.calendar a.sr-only,
+.calendar a[href*="year-list"] {
+    display: none !important;
+}
+
+/* Make the first column span full width */
+.calendar .contrib-column:first-child {
+    width: 100% !important;
+    border-right: none !important;
+}
+
 /* ===== RESPONSIVE: Tablet (max-width: 768px) ===== */
 @media (max-width: 768px) {
     /* Mobile Navigation */

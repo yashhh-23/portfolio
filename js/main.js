@@ -305,6 +305,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // GitHub Calendar Initialization
+    if (typeof GitHubCalendar !== 'undefined') {
+        GitHubCalendar(".calendar", "yashhh-23", {
+            responsive: true,
+            tooltips: true
+        }).then(function() {
+            console.log('GitHub Calendar loaded');
+        }).catch(function(err) {
+            console.error('Failed to load GitHub Calendar:', err);
+            const calendarEl = document.querySelector('.calendar');
+            if (calendarEl) {
+                calendarEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Could not load GitHub contributions at this time.</p>';
+            }
+        });
+    }
+
     // Contact Form Handler
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
