@@ -49,6 +49,20 @@
    We keep the previous logic disabled or ensure base styles are visible 
 */
 
+/* Disable spotlight effect on touch-only devices (iOS, Android) */
+@media (hover: none) and (pointer: coarse) {
+    .projects-grid:has(.project-card:hover) .project-card:not(:hover) {
+        opacity: 1;
+        filter: none;
+        transform: none;
+    }
+
+    .project-card:active {
+        border-color: var(--accent-color);
+        transform: scale(0.98);
+    }
+}
+
 .project-card::before {
     content: '';
     position: absolute;

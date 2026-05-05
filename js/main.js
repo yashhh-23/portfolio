@@ -3,6 +3,7 @@ console.log("Portfolio loaded");
 // Mobile Navigation Toggle
 const hamburgerBtn = document.querySelector('.hamburger-btn');
 const navList = document.querySelector('.nav-list');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 if (hamburgerBtn && navList) {
     hamburgerBtn.addEventListener('click', () => {
@@ -20,6 +21,17 @@ if (hamburgerBtn && navList) {
             hamburgerBtn.setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
         });
+    });
+
+    // Close menu on Escape key (keyboard accessibility)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navList.classList.contains('mobile-open')) {
+            navList.classList.remove('mobile-open');
+            hamburgerBtn.classList.remove('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+            hamburgerBtn.focus();
+        }
     });
 }
 
@@ -92,8 +104,13 @@ class Particle {
     }
 }
 
+// Adaptive particle count: fewer on mobile for battery/performance
+const isMobile = window.innerWidth <= 768;
+const particleCount = isMobile ? 20 : 50;
+
 function initParticles() {
-    for (let i = 0; i < 50; i++) {
+    particles = [];
+    for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
     }
 }
@@ -233,22 +250,24 @@ if (typeof gsap !== 'undefined') {
         ease: "back.out(1.7)"
     });
 
-    // Antigravity Float Effect - target the wrapper so the whole circle floats
-    gsap.to(".profile-image-wrapper", {
-        y: 15,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 1.6 // Start in sync with title
-    });
+    // Antigravity Float Effect - only if user hasn't opted for reduced motion
+    if (!prefersReducedMotion.matches) {
+        gsap.to(".profile-image-wrapper", {
+            y: 15,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 1.6
+        });
 
-    gsap.to(".hero-title", {
-        y: 12,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: 1.6 // Start AFTER entrance animation (0.5 + 1.0 = 1.5s)
-    });
+        gsap.to(".hero-title", {
+            y: 12,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 1.6
+        });
+    }
 }

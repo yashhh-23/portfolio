@@ -33,7 +33,23 @@
 }
 
 html {
-    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* Respect users who prefer reduced motion (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 body {
@@ -43,7 +59,47 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    /* iOS Safari: prevent tap highlight flash */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== Custom Scrollbar — all platforms ===== */
+/* WebKit (Chrome, Safari, Edge, Android, iOS) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) var(--bg-color);
+}
+
+/* ===== Selection highlight ===== */
+::selection {
+    background: rgba(0, 240, 255, 0.25);
+    color: var(--text-primary);
+}
+
+::-moz-selection {
+    background: rgba(0, 240, 255, 0.25);
+    color: var(--text-primary);
 }
 
 /* Utilities */
@@ -67,6 +123,41 @@ a {
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
+    /* Prevent iOS Safari callout on long-press links */
+    -webkit-touch-callout: default;
+}
+
+/* ===== Focus-Visible accessibility (keyboard navigation) ===== */
+/* Only show focus ring on keyboard nav, not mouse/touch */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* ===== Touch-friendly active states ===== */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch device: show active state on tap instead of hover */
+    .btn:active,
+    .btn-cv:active,
+    .btn-block:active,
+    .contact-card:active,
+    .project-card:active,
+    .nav-link:active {
+        opacity: 0.8;
+        transform: scale(0.97);
+        transition: transform 0.1s ease, opacity 0.1s ease;
+    }
+}
+
+/* Image rendering optimization for Retina / HiDPI screens */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
 }
 
 ul {
@@ -107,6 +198,7 @@ ul {
     height: 100%;
     z-index: 0;
     opacity: 0.5;
+    pointer-events: none;
 }
 
 /* Navigation */
@@ -292,6 +384,11 @@ ul {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    /* Apple HIG: minimum 44px touch target */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary {
@@ -571,11 +668,15 @@ ul {
     justify-content: center;
     width: 60px;
     height: 60px;
+    /* Apple HIG: min 44px touch target — 60px exceeds this */
     border-radius: 50%;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
     color: var(--text-secondary);
     transition: all 0.3s ease;
+    /* Prevent accidental text selection on tap */
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .contact-card svg {
@@ -897,6 +998,8 @@ ul {
 /* Footer */
 footer {
     padding: 40px 0;
+    /* iPhone home-indicator safe area */
+    padding-bottom: max(40px, calc(40px + var(--safe-area-bottom)));
     border-top: 1px solid var(--border-color);
     text-align: center;
     position: relative;
@@ -916,6 +1019,8 @@ footer {
 .footer-links a {
     color: var(--text-secondary);
     transition: color 0.3s ease;
+    /* Ensure touch targets are large enough */
+    padding: 4px 2px;
 }
 
 .footer-links a:hover {
