@@ -340,49 +340,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Custom Cursor Logic
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorOutline = document.getElementById('cursor-outline');
-
-    if (cursorDot && cursorOutline) {
-        // Only run if device supports hover
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-            
-            window.addEventListener('mousemove', (e) => {
-                const posX = e.clientX;
-                const posY = e.clientY;
-
-                // Move dot instantly
-                cursorDot.style.left = `${posX}px`;
-                cursorDot.style.top = `${posY}px`;
-
-                // Animate outline with slight delay (using GSAP for smoothness if available, else plain CSS)
-                if (window.gsap) {
-                    gsap.to(cursorOutline, {
-                        x: posX,
-                        y: posY,
-                        duration: 0.15,
-                        ease: "power2.out"
-                    });
-                    // For GSAP, we need to handle transform specifically since we set top/left to 0 in CSS
-                    cursorOutline.style.left = 0;
-                    cursorOutline.style.top = 0;
-                } else {
-                    cursorOutline.style.left = `${posX}px`;
-                    cursorOutline.style.top = `${posY}px`;
-                }
-            });
-
-            // Add hover effect to all links and buttons
-            const interactables = document.querySelectorAll('a, button, input, textarea');
-            interactables.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    document.body.classList.add('hovering');
-                });
-                el.addEventListener('mouseleave', () => {
-                    document.body.classList.remove('hovering');
-                });
-            });
-        }
-    }
 });

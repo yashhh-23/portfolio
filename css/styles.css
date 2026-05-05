@@ -1122,45 +1122,6 @@ footer {
     filter: invert(1);
 }
 
-/* Custom Cursor */
-@media (hover: hover) and (pointer: fine) {
-    body {
-        cursor: none; /* Hide default cursor only on devices with a mouse */
-    }
-    
-    .cursor-dot,
-    .cursor-outline {
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        z-index: 10000;
-        pointer-events: none;
-    }
-
-    .cursor-dot {
-        width: 8px;
-        height: 8px;
-        background-color: var(--accent-color);
-        box-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    .cursor-outline {
-        width: 40px;
-        height: 40px;
-        border: 1px solid rgba(0, 240, 255, 0.5);
-        transition: width 0.2s, height 0.2s, background-color 0.2s;
-    }
-
-    /* Interactive state */
-    body.hovering .cursor-outline {
-        width: 60px;
-        height: 60px;
-        background-color: rgba(0, 240, 255, 0.1);
-        border-color: transparent;
-    }
-}
 
 /* Contact Form */
 .contact-wrapper {
