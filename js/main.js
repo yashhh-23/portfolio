@@ -311,60 +311,70 @@ document.addEventListener('DOMContentLoaded', () => {
             responsive: true,
             tooltips: true
         }).then(function(res) {
-            // The library returns an object that often includes the parsed data
-            // If not directly available, we can fetch the summary from the library's internal state
-            // or rely on the rendered elements. However, many versions expose the summary.
-            
-            // For a more robust approach, we can manually fetch the JSON data if needed,
-            // but let's try to extract it from the result first.
-            const container = document.querySelector('.calendar');
-            const totalCommitsText = container.querySelector('.contrib-number') ? container.querySelector('.contrib-number').innerText : '0';
-            
-            // Update Total This Year
-            document.getElementById('total-this-year').textContent = totalCommitsText.split(' ')[0] || '0';
+            // Wait for the library to finish rendering its inner SVG
+            setTimeout(() => {
+                const container = document.querySelector('.calendar');
+                
+                // 1. Update Total This Year from the library's rendered text
+                const totalCommitsText = container.querySelector('.contrib-number') ? container.querySelector('.contrib-number').innerText : '0';
+                document.getElementById('total-this-year').textContent = totalCommitsText.split(' ')[0] || '0';
 
-            // To get "Commits Today" and "Current Streak" accurately, we'll fetch the JSON summary
-            // This is the most reliable way as the library's internal scraper can be inconsistent
-            fetch(`https://github-contributions-api.deno.dev/yashhh-23.json`)
-                .then(response => response.json())
-                .then(data => {
-                    const contributions = data.contributions || [];
-                    if (contributions.length > 0) {
-                        // Flat array of all days
-                        const allDays = contributions.flat();
-                        const todayStr = new Date().toISOString().split('T')[0];
-                        const todayData = allDays.find(day => day.date === todayStr);
-                        const commitsToday = todayData ? todayData.count : 0;
+                // 2. Extract detailed data from the SVG rects or HTML table cells for Today's Commits and Streak
+                const elements = Array.from(container.querySelectorAll('rect, .ContributionCalendar-day'));
+                if (elements.length > 0) {
+                    const today = new Date();
+                    const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+                    
+                    // Map elements to data objects by extracting date and count attributes
+                    const days = elements.map(r => {
+                        let count = 0;
+                        const dateStr = r.getAttribute('data-date');
+                        const id = r.getAttribute('id');
+                        const tooltip = id ? document.querySelector(`tool-tip[for="${id}"]`) : null;
                         
+                        if (tooltip) {
+                            const text = tooltip.textContent || '';
+                            const match = text.match(/^(\d+|No)\s+contribution/);
+                            if (match) {
+                                count = match[1] === 'No' ? 0 : parseInt(match[1]);
+                            }
+                        } else {
+                            count = parseInt(r.getAttribute('data-count') || r.getAttribute('data-contribution-count') || (parseInt(r.getAttribute('data-level') || '0') > 0 ? '1' : '0'));
+                        }
+                        
+                        return { date: dateStr, count: count };
+                    }).filter(d => d.date);
+
+                    if (days.length > 0) {
+                        const todayData = days.find(day => day.date === todayStr);
+                        const commitsToday = todayData ? todayData.count : 0;
                         document.getElementById('commits-today').textContent = commitsToday;
 
                         // Calculate Current Streak
                         let streak = 0;
-                        const sortedDays = allDays.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        // Sort days descending (newest first)
+                        const sortedDays = days.sort((a, b) => new Date(b.date) - new Date(a.date));
                         
-                        // Check if streak is broken (if no commits today AND no commits yesterday)
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        const yesterdayStr = yesterday.toISOString().split('T')[0];
-                        const yesterdayData = allDays.find(day => day.date === yesterdayStr);
-
-                        if (commitsToday === 0 && (!yesterdayData || yesterdayData.count === 0)) {
-                            streak = 0;
-                        } else {
-                            for (let day of sortedDays) {
-                                if (day.date > todayStr) continue;
+                        // Find index of today or the most recent day in the data
+                        const startIndex = sortedDays.findIndex(d => d.date <= todayStr);
+                        
+                        if (startIndex !== -1) {
+                            for (let i = startIndex; i < sortedDays.length; i++) {
+                                const day = sortedDays[i];
                                 if (day.count > 0) {
                                     streak++;
-                                } else if (day.date !== todayStr) {
-                                    // Streak breaks if it's not today and count is 0
-                                    break;
+                                } else {
+                                    // If we hit a 0 and it's not "today" (where we might still be working), the streak breaks
+                                    if (day.date !== todayStr) {
+                                        break;
+                                    }
                                 }
                             }
                         }
                         document.getElementById('current-streak').textContent = `${streak} Days`;
                     }
-                })
-                .catch(e => console.error("Error fetching detailed GitHub stats:", e));
+                }
+            }, 800);
 
         }).catch(function(err) {
             console.error('Failed to load GitHub Calendar:', err);

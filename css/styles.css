@@ -751,32 +751,35 @@ ul {
     border: none !important;
 }
 
-/* Modern GitHub Calendar squares */
-.calendar rect.ContributionCalendar-day[data-level="0"] {
-    fill: #161b22 !important;
+/* Hide EVERYTHING unnecessary inside the calendar container */
+.calendar h2, 
+.calendar a, 
+.calendar button, 
+.calendar .sr-only,
+.calendar .contrib-footer,
+.calendar .contrib-column,
+.calendar .js-calendar-graph-svg + div {
+    display: none !important;
+}
+
+/* Ensure the SVG is visible and clean */
+.calendar .js-calendar-graph-svg {
+    display: block !important;
+    margin: 0 auto;
+}
+
+/* Force square colors and rounded corners */
+.calendar rect {
     rx: 2;
     ry: 2;
 }
-.calendar rect.ContributionCalendar-day[data-level="1"] {
-    fill: rgba(0, 240, 255, 0.25) !important;
-    rx: 2;
-    ry: 2;
-}
-.calendar rect.ContributionCalendar-day[data-level="2"] {
-    fill: rgba(0, 240, 255, 0.5) !important;
-    rx: 2;
-    ry: 2;
-}
-.calendar rect.ContributionCalendar-day[data-level="3"] {
-    fill: rgba(0, 240, 255, 0.75) !important;
-    rx: 2;
-    ry: 2;
-}
-.calendar rect.ContributionCalendar-day[data-level="4"] {
-    fill: rgba(0, 240, 255, 1) !important;
-    rx: 2;
-    ry: 2;
-}
+
+/* Target both data-level and potential inline fill colors for maximum compatibility */
+.calendar rect[data-level="0"], .calendar rect[fill="#ebedf0"], .calendar rect[fill="#161b22"] { fill: #161b22 !important; }
+.calendar rect[data-level="1"], .calendar rect[fill="#9be9a8"], .calendar rect[fill="#0e4429"] { fill: rgba(0, 240, 255, 0.25) !important; }
+.calendar rect[data-level="2"], .calendar rect[fill="#40c463"], .calendar rect[fill="#006d32"] { fill: rgba(0, 240, 255, 0.5) !important; }
+.calendar rect[data-level="3"], .calendar rect[fill="#30a14e"], .calendar rect[fill="#26a641"] { fill: rgba(0, 240, 255, 0.75) !important; }
+.calendar rect[data-level="4"], .calendar rect[fill="#216e39"], .calendar rect[fill="#39d353"] { fill: rgba(0, 240, 255, 1) !important; }
 
 .calendar .ContributionCalendar-label {
     fill: var(--text-secondary) !important;
@@ -806,16 +809,6 @@ ul {
 
 .svg-tip::after {
     border-top-color: var(--border-color) !important;
-}
-
-/* Fix stats colors and hide broken streaks */
-.calendar .contrib-column,
-.calendar .contrib-footer,
-.calendar .js-calendar-graph-svg + div,
-.calendar h2.sr-only,
-.calendar a.sr-only,
-.calendar a[href*="year-list"] {
-    display: none !important;
 }
 
 /* Custom GitHub Stats Container */
