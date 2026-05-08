@@ -3,12 +3,11 @@ const themeToggleBtn = document.getElementById('theme-toggle');
 const rootElement = document.documentElement;
 
 const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 if (savedTheme) {
     rootElement.setAttribute('data-theme', savedTheme);
-} else if (!systemPrefersDark) {
-    rootElement.setAttribute('data-theme', 'light');
+} else {
+    rootElement.setAttribute('data-theme', 'dark');
 }
 
 if (themeToggleBtn) {
