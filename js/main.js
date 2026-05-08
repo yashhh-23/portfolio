@@ -1,5 +1,3 @@
-console.log("Portfolio loaded");
-
 // Mobile Navigation Toggle
 const hamburgerBtn = document.querySelector('.hamburger-btn');
 const navList = document.querySelector('.nav-list');
@@ -68,6 +66,8 @@ const canvas = document.getElementById("antigravity-canvas");
 const ctx = canvas.getContext("2d");
 let width, height;
 let particles = [];
+let animationId = null;
+let isTabVisible = true;
 
 function resize() {
     width = canvas.width = window.innerWidth;
@@ -75,6 +75,14 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 resize();
+
+// Pause animation when tab is hidden to save CPU/battery
+document.addEventListener("visibilitychange", () => {
+    isTabVisible = !document.hidden;
+    if (isTabVisible && !animationId) {
+        animate();
+    }
+});
 
 class Particle {
     constructor() {
@@ -116,30 +124,37 @@ function initParticles() {
 }
 
 function animate() {
+    if (!isTabVisible) {
+        animationId = null;
+        return;
+    }
+
     ctx.clearRect(0, 0, width, height);
     particles.forEach(p => {
         p.update();
         p.draw();
     });
 
-    // Draw connecting lines if close
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-    for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+    // Draw connecting lines only on desktop (skip on mobile for performance)
+    if (!isMobile) {
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = dx * dx + dy * dy; // Skip sqrt for performance
 
-            if (dist < 150) {
-                ctx.beginPath();
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
+                if (dist < 22500) { // 150 * 150
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
             }
         }
     }
 
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
 }
 
 initParticles();
@@ -277,21 +292,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('scroll-progress');
     const backToTopBtn = document.getElementById('back-to-top');
 
-    // Scroll Events
+    // Throttled Scroll Handler using rAF
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-        // Progress Bar logic
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        if (progressBar) {
-            progressBar.style.width = scrolled + "%";
-        }
+        if (!scrollTicking) {
+            requestAnimationFrame(() => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / docHeight) * 100;
 
-        // Back to Top button logic
-        if (winScroll > 300) {
-            if (backToTopBtn) backToTopBtn.classList.add('visible');
-        } else {
-            if (backToTopBtn) backToTopBtn.classList.remove('visible');
+                if (progressBar) {
+                    progressBar.style.width = scrolled + "%";
+                }
+
+                if (winScroll > 300) {
+                    if (backToTopBtn) backToTopBtn.classList.add('visible');
+                } else {
+                    if (backToTopBtn) backToTopBtn.classList.remove('visible');
+                }
+
+                scrollTicking = false;
+            });
+            scrollTicking = true;
         }
     });
 
@@ -302,86 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 top: 0,
                 behavior: 'smooth'
             });
-        });
-    }
-
-    // GitHub Calendar Initialization
-    if (typeof GitHubCalendar !== 'undefined') {
-        GitHubCalendar(".calendar", "yashhh-23", {
-            responsive: true,
-            tooltips: true
-        }).then(function(res) {
-            // Wait for the library to finish rendering its inner SVG
-            setTimeout(() => {
-                const container = document.querySelector('.calendar');
-                
-                // 1. Update Total This Year from the library's rendered text
-                const totalCommitsText = container.querySelector('.contrib-number') ? container.querySelector('.contrib-number').innerText : '0';
-                document.getElementById('total-this-year').textContent = totalCommitsText.split(' ')[0] || '0';
-
-                // 2. Extract detailed data from the SVG rects or HTML table cells for Today's Commits and Streak
-                const elements = Array.from(container.querySelectorAll('rect, .ContributionCalendar-day'));
-                if (elements.length > 0) {
-                    const today = new Date();
-                    const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-                    
-                    // Map elements to data objects by extracting date and count attributes
-                    const days = elements.map(r => {
-                        let count = 0;
-                        const dateStr = r.getAttribute('data-date');
-                        const id = r.getAttribute('id');
-                        const tooltip = id ? document.querySelector(`tool-tip[for="${id}"]`) : null;
-                        
-                        if (tooltip) {
-                            const text = tooltip.textContent || '';
-                            const match = text.match(/^(\d+|No)\s+contribution/);
-                            if (match) {
-                                count = match[1] === 'No' ? 0 : parseInt(match[1]);
-                            }
-                        } else {
-                            count = parseInt(r.getAttribute('data-count') || r.getAttribute('data-contribution-count') || (parseInt(r.getAttribute('data-level') || '0') > 0 ? '1' : '0'));
-                        }
-                        
-                        return { date: dateStr, count: count };
-                    }).filter(d => d.date);
-
-                    if (days.length > 0) {
-                        const todayData = days.find(day => day.date === todayStr);
-                        const commitsToday = todayData ? todayData.count : 0;
-                        document.getElementById('commits-today').textContent = commitsToday;
-
-                        // Calculate Current Streak
-                        let streak = 0;
-                        // Sort days descending (newest first)
-                        const sortedDays = days.sort((a, b) => new Date(b.date) - new Date(a.date));
-                        
-                        // Find index of today or the most recent day in the data
-                        const startIndex = sortedDays.findIndex(d => d.date <= todayStr);
-                        
-                        if (startIndex !== -1) {
-                            for (let i = startIndex; i < sortedDays.length; i++) {
-                                const day = sortedDays[i];
-                                if (day.count > 0) {
-                                    streak++;
-                                } else {
-                                    // If we hit a 0 and it's not "today" (where we might still be working), the streak breaks
-                                    if (day.date !== todayStr) {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        document.getElementById('current-streak').textContent = `${streak} Days`;
-                    }
-                }
-            }, 800);
-
-        }).catch(function(err) {
-            console.error('Failed to load GitHub Calendar:', err);
-            const calendarEl = document.querySelector('.calendar');
-            if (calendarEl) {
-                calendarEl.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Could not load GitHub contributions at this time.</p>';
-            }
         });
     }
 
@@ -398,15 +340,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = document.getElementById('message').value;
             
             if(name && email && message) {
-                // Construct mailto link
                 const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
                 const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
                 
-                // Show success status temporarily
                 formStatus.textContent = 'Opening email client...';
                 formStatus.className = 'form-status success';
                 
-                // Trigger mailto
                 window.location.href = `mailto:yashdedhia05@gmail.com?subject=${subject}&body=${body}`;
                 
                 setTimeout(() => {
