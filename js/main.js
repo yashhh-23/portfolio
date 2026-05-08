@@ -393,13 +393,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewCvBtn && cvModal && closeCvModalBtn) {
         const openModal = (e) => {
             if(e) e.preventDefault();
-            cvModal.classList.add('open');
+            cvModal.style.display = 'flex';
+            // slight delay to allow display: flex to apply before opacity transition
+            requestAnimationFrame(() => {
+                cvModal.classList.add('open');
+            });
             document.body.style.overflow = 'hidden';
         };
 
         const closeModal = () => {
             cvModal.classList.remove('open');
             document.body.style.overflow = '';
+            // wait for transition to finish before hiding
+            setTimeout(() => {
+                if(!cvModal.classList.contains('open')) {
+                    cvModal.style.display = 'none';
+                }
+            }, 300);
         };
 
         viewCvBtn.addEventListener('click', openModal);
