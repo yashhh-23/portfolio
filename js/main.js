@@ -386,4 +386,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // CV Modal Handler
+    const viewCvBtn = document.getElementById('view-cv-btn');
+    const cvModal = document.getElementById('cv-modal');
+    const closeCvModalBtn = document.getElementById('close-cv-modal');
+
+    if (viewCvBtn && cvModal && closeCvModalBtn) {
+        const openModal = (e) => {
+            if(e) e.preventDefault();
+            cvModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeModal = () => {
+            cvModal.classList.remove('open');
+            document.body.style.overflow = '';
+        };
+
+        viewCvBtn.addEventListener('click', openModal);
+        closeCvModalBtn.addEventListener('click', closeModal);
+        
+        cvModal.addEventListener('click', (e) => {
+            if (e.target === cvModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && cvModal.classList.contains('open')) {
+                closeModal();
+            }
+        });
+    }
+
 });
