@@ -1,3 +1,26 @@
+// Theme Toggle Logic
+const themeToggleBtn = document.getElementById('theme-toggle');
+const rootElement = document.documentElement;
+
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme) {
+    rootElement.setAttribute('data-theme', savedTheme);
+} else if (!systemPrefersDark) {
+    rootElement.setAttribute('data-theme', 'light');
+}
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = rootElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        rootElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+}
+
 // Mobile Navigation Toggle
 const hamburgerBtn = document.querySelector('.hamburger-btn');
 const navList = document.querySelector('.nav-list');
@@ -91,7 +114,7 @@ class Particle {
         this.vx = (Math.random() - 0.5) * 0.5;
         this.vy = (Math.random() - 0.5) * 0.5;
         this.size = Math.random() * 2;
-        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5})`;
+        this.alpha = Math.random() * 0.5;
     }
 
     update() {
@@ -105,7 +128,9 @@ class Particle {
     }
 
     draw() {
-        ctx.fillStyle = this.color;
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const rgb = isLight ? '0, 0, 0' : '255, 255, 255';
+        ctx.fillStyle = `rgba(${rgb}, ${this.alpha})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -137,7 +162,9 @@ function animate() {
 
     // Draw connecting lines only on desktop (skip on mobile for performance)
     if (!isMobile) {
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const rgb = isLight ? '0, 0, 0' : '255, 255, 255';
+        ctx.strokeStyle = `rgba(${rgb}, 0.05)`;
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
