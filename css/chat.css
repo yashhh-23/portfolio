@@ -181,16 +181,96 @@
     margin-left: 2px;
 }
 
+/* Typing Indicator Styles */
+.message.bot.typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    min-height: 38px;
+    width: fit-content;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--text-secondary);
+    border-radius: 50%;
+    animation: typingPulse 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typingPulse {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.3;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 480px) {
     .chatbot-container {
-        bottom: max(20px, var(--safe-area-bottom));
-        right: 20px;
+        bottom: max(15px, var(--safe-area-bottom));
+        right: 15px;
+        transition: all 0.3s ease;
     }
     
-    .chat-window {
-        width: calc(100vw - 40px);
-        height: 60vh;
+    .chatbot-container.open {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 2000;
+        bottom: 0;
+        right: 0;
+    }
+
+    .chatbot-container.open .chat-window {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+        bottom: 0;
+        right: 0;
+        box-shadow: none;
+    }
+
+    .chatbot-container.open .chat-toggle-btn {
+        position: fixed;
+        bottom: max(15px, var(--safe-area-bottom));
+        right: 15px;
+        z-index: 2100;
+        width: 50px;
+        height: 50px;
+    }
+
+    .chatbot-container:not(.open) .chat-window {
         bottom: 70px;
+        right: 0;
+        width: calc(100vw - 30px);
+        height: 60vh;
+    }
+
+    /* Adjust input area padding when open on mobile to avoid overlapping floating close button */
+    .chatbot-container.open .chat-input-area {
+        padding-right: 80px;
     }
 }
+

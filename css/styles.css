@@ -12,6 +12,9 @@
     --nav-bg: rgba(10, 10, 10, 0.8);
     --bot-msg-bg: rgba(255, 255, 255, 0.05);
     --user-msg-bg: rgba(0, 240, 255, 0.15);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
+    --nav-bg-mobile: rgba(10, 10, 10, 0.97);
 
     /* Typography */
     --font-main: 'Inter', sans-serif;
@@ -39,6 +42,9 @@
     --nav-bg: rgba(252, 252, 252, 0.85);
     --bot-msg-bg: rgba(0, 0, 0, 0.05);
     --user-msg-bg: rgba(0, 112, 243, 0.1);
+    --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+    --scrollbar-thumb-hover: rgba(0, 0, 0, 0.3);
+    --nav-bg-mobile: rgba(252, 252, 252, 0.97);
 }
 
 *,
@@ -95,18 +101,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--scrollbar-thumb-hover);
 }
 
 /* Firefox */
 html {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) var(--bg-color);
+    scrollbar-color: var(--scrollbar-thumb) var(--bg-color);
 }
 
 /* ===== Selection highlight ===== */
@@ -143,6 +149,19 @@ a {
     transition: all 0.3s ease;
     /* Prevent iOS Safari callout on long-press links */
     -webkit-touch-callout: default;
+}
+
+/* Screen reader only utility (SEO/A11y) */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* ===== Focus-Visible accessibility (keyboard navigation) ===== */
@@ -814,7 +833,7 @@ ul {
         width: 100%;
         height: 100vh;
         height: 100dvh;
-        background: rgba(10, 10, 10, 0.97);
+        background: var(--nav-bg-mobile);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
@@ -1388,6 +1407,10 @@ footer {
 
 .form-status.error {
     color: #f44336;
+}
+
+.form-status.loading {
+    color: var(--accent-color);
 }
 
 /* Mobile Responsive Overrides */

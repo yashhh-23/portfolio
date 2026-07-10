@@ -1,7 +1,4 @@
 {
-  "name": "yash-dedhia",
-  "version": 2,
-  "public": true,
   "cleanUrls": true,
   "headers": [
     {

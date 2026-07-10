@@ -6,10 +6,12 @@ async function runSEOAudit() {
     console.log(`Starting SEO audit for ${url}...`);
     
     // Dynamic import for Lighthouse (ESM)
-    const { default: lighthouse } = await import('lighthouse');
+    const lhModule = await import('lighthouse');
+    const lighthouse = lhModule.lighthouse || lhModule.default || lhModule;
     
-    // Launch Puppeteer
+    // Launch Puppeteer using system Chrome
     const browser = await puppeteer.launch({
+        channel: 'chrome',
         headless: 'new',
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });

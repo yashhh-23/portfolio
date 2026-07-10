@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
-    align-items: stretch;
+    align-items: start;
 }
 
 /* Achievements section specific grid */
@@ -35,30 +35,26 @@
     transition: opacity 0.8s ease, transform 0.8s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Spotlight Effect: Blur others when one is hovered */
-.projects-grid:has(.project-card:hover) .project-card:not(:hover) {
-    opacity: 0.45;
-    filter: blur(3px);
-    transform: scale(0.985);
-}
-
-.project-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-color);
-    box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.18);
-}
-
-/* Disable spotlight effect on touch-only devices (iOS, Android) */
-@media (hover: none) and (pointer: coarse) {
+/* Spotlight Effect: Blur others when one is hovered (desktop only) */
+@media (hover: hover) {
     .projects-grid:has(.project-card:hover) .project-card:not(:hover) {
-        opacity: 1;
-        filter: none;
-        transform: none;
+        opacity: 0.45;
+        filter: blur(3px);
+        transform: scale(0.985);
     }
 
+    .project-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.18);
+    }
+}
+
+/* Touch active styles */
+@media (hover: none) and (pointer: coarse) {
     .project-card:active {
         border-color: var(--accent-color);
-        transform: scale(0.98);
+        box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.18);
     }
 }
 
@@ -127,6 +123,7 @@
     font-size: 0.95rem;
     line-height: 1.65;
     margin-bottom: 0;
+    min-height: 3.3em;
 }
 
 .project-desc-extended {
@@ -150,24 +147,28 @@
 }
 
 .read-more-btn {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.35);
     color: var(--accent-color);
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     margin-top: 14px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
 }
 
 .read-more-btn:hover {
-    background: rgba(0, 240, 255, 0.1);
+    background: var(--accent-color);
     border-color: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px var(--accent-glow);
     transform: translateY(-2px);
 }
 

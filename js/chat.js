@@ -33,10 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const listItems = cat.querySelectorAll('.tech-list li');
             if (titleEl && listItems.length > 0) {
                 const title = titleEl.textContent.trim();
-                const techs = Array.from(listItems).map(li => li.textContent.trim()).join(', ');
+                const techsArray = Array.from(listItems).map(li => li.textContent.trim());
+                const techs = techsArray.join(', ');
                 dynamicKB.push({
                     type: 'skill',
-                    keywords: title.toLowerCase().split(/\s+/).concat(['tech', 'skills', 'languages']),
+                    // Include specific technology names in keywords to allow matching on specific queries!
+                    keywords: title.toLowerCase().split(/\s+/)
+                        .concat(techsArray.map(t => t.toLowerCase()))
+                        .concat(['tech', 'skills', 'languages']),
                     title: title,
                     answer: `Under <strong>${title}</strong>, my skills include: ${techs}.`
                 });
@@ -135,12 +139,63 @@ document.addEventListener('DOMContentLoaded', () => {
         return `I apologize, but I don't have that exact information. Try asking about a specific project by name (e.g., "WhiteboardWeb"), or please <a href="mailto:yashdedhia05@gmail.com">contact Yash directly</a>!`;
     };
 
-    const addMessage = (message, sender) => {
+    // Persistence Helpers
+    const saveChatHistory = () => {
+        const messages = [];
+        chatMessages.querySelectorAll('.message:not(.typing)').forEach(msg => {
+            messages.push({
+                text: msg.innerHTML,
+                sender: msg.classList.contains('user') ? 'user' : 'bot'
+            });
+        });
+        sessionStorage.setItem('portfolio_chat_history', JSON.stringify(messages));
+    };
+
+    const loadChatHistory = () => {
+        const saved = sessionStorage.getItem('portfolio_chat_history');
+        if (saved) {
+            try {
+                const messages = JSON.parse(saved);
+                messages.forEach(msg => {
+                    addMessage(msg.text, msg.sender, false);
+                });
+            } catch (e) {
+                console.error('Error loading chat history:', e);
+            }
+        }
+    };
+
+    // Typing Indicator Helpers
+    const showTypingIndicator = () => {
+        removeTypingIndicator(); // Ensure no duplicates
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('message', 'bot', 'typing');
+        typingDiv.id = 'chat-typing-indicator';
+        typingDiv.innerHTML = `
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const removeTypingIndicator = () => {
+        const indicator = document.getElementById('chat-typing-indicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    };
+
+    const addMessage = (message, sender, shouldSave = true) => {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender);
         messageDiv.innerHTML = message;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (shouldSave) {
+            saveChatHistory();
+        }
     };
 
     const handleSend = () => {
@@ -148,14 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (message === '') return;
 
         // Add user message
-        addMessage(message, 'user');
+        addMessage(message, 'user', true);
         chatInput.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
 
         // Simulate typing delay
         setTimeout(() => {
+            removeTypingIndicator();
             const botReply = getBotResponse(message);
-            addMessage(botReply, 'bot');
-        }, 500);
+            addMessage(botReply, 'bot', true);
+        }, 1000);
     };
 
     // Event Listeners
@@ -164,10 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
             chatContainer.classList.toggle('open');
             if (chatContainer.classList.contains('open')) {
                 chatInput.focus();
-                if (chatMessages.children.length === 0) {
-                    // Initial greeting
+                if (chatMessages.querySelectorAll('.message').length === 0) {
+                    // Initial greeting (only if no saved history)
                     setTimeout(() => {
-                        addMessage("Hi! I'm Yash's assistant. How can I help you?", 'bot');
+                        addMessage("Hi! I'm Yash's assistant. How can I help you?", 'bot', true);
                     }, 300);
                 }
             }
@@ -185,4 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Load history on page load
+    loadChatHistory();
 });

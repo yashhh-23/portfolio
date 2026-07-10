@@ -1,8 +1,9 @@
-// Theme Toggle Logic
+// Theme Toggle Logic & Caching for Performance
 const themeToggleBtn = document.getElementById('theme-toggle');
 const rootElement = document.documentElement;
 
 const savedTheme = localStorage.getItem('theme');
+let isLightTheme = (savedTheme || 'dark') === 'light';
 
 if (savedTheme) {
     rootElement.setAttribute('data-theme', savedTheme);
@@ -17,6 +18,7 @@ if (themeToggleBtn) {
         
         rootElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
+        isLightTheme = newTheme === 'light'; // Cache theme state to prevent DOM queries in canvas loop
     });
 }
 
@@ -31,6 +33,16 @@ if (hamburgerBtn && navList) {
         hamburgerBtn.classList.toggle('active');
         hamburgerBtn.setAttribute('aria-expanded', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Unlocks scroll and closes mobile menu if window is resized past mobile breakpoint
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && navList.classList.contains('mobile-open')) {
+            navList.classList.remove('mobile-open');
+            hamburgerBtn.classList.remove('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
     });
 
     // Close menu when a nav link is clicked
@@ -127,8 +139,8 @@ class Particle {
     }
 
     draw() {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const rgb = isLight ? '0, 0, 0' : '255, 255, 255';
+        // Use cached variable to avoid 3,000+ DOM queries per second
+        const rgb = isLightTheme ? '0, 0, 0' : '255, 255, 255';
         ctx.fillStyle = `rgba(${rgb}, ${this.alpha})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -161,8 +173,7 @@ function animate() {
 
     // Draw connecting lines only on desktop (skip on mobile for performance)
     if (!isMobile) {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const rgb = isLight ? '0, 0, 0' : '255, 255, 255';
+        const rgb = isLightTheme ? '0, 0, 0' : '255, 255, 255';
         ctx.strokeStyle = `rgba(${rgb}, 0.05)`;
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
@@ -188,6 +199,7 @@ animate();
 
 // GSAP Animations (Check if GSAP is loaded)
 if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
     gsap.from(".hero-title", {
         duration: 1,
         y: 100,
@@ -239,33 +251,7 @@ if (typeof gsap !== 'undefined') {
         ease: "power2.out"
     });
 
-    // Tech Categories – Reveal on Scroll (CSS-driven)
-    const techCards = document.querySelectorAll(".tech-category");
-    const techObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add("visible");
-                }, index * 120);
-                techObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    techCards.forEach(card => techObserver.observe(card));
 
-    // Project Cards – Reveal on Scroll (CSS-driven)
-    const projectCards = document.querySelectorAll(".project-card");
-    const projectObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add("visible");
-                }, index * 150);
-                projectObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    projectCards.forEach(card => projectObserver.observe(card));
 
     // About/Contact Reveal
     gsap.from(".about-text p", {
@@ -313,6 +299,34 @@ if (typeof gsap !== 'undefined') {
     }
 }
 
+// Tech Categories – Reveal on Scroll (CSS-driven, independent of GSAP)
+const techCards = document.querySelectorAll(".tech-category");
+const techObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add("visible");
+            }, index * 120);
+            techObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+techCards.forEach(card => techObserver.observe(card));
+
+// Project Cards – Reveal on Scroll (CSS-driven, independent of GSAP)
+const projectCards = document.querySelectorAll(".project-card");
+const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add("visible");
+            }, index * 150);
+            projectObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+projectCards.forEach(card => projectObserver.observe(card));
+
 // UX Enhancements (Progress Bar, Back to Top, Contact Form)
 document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('scroll-progress');
@@ -353,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Contact Form Handler
+    // Contact Form Handler (AJAX implementation)
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
 
@@ -364,23 +378,74 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
+            const submitBtn = contactForm.querySelector('.btn-submit');
             
-            if(name && email && message) {
-                const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
-                const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+            if (name && email && message) {
+                // Visual Loading State
+                formStatus.textContent = 'Sending message...';
+                formStatus.className = 'form-status loading';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Sending...';
+                }
+
+                // Endpoint variable (empty uses simulation by default)
+                const endpoint = 'https://formspree.io/f/xlgyqovj'; // e.g. 'https://api.web3forms.com/submit'
                 
-                formStatus.textContent = 'Opening email client...';
+                if (endpoint) {
+                    fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            message: message
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            showSuccess();
+                        } else {
+                            showError('Oops! Something went wrong. Please try again.');
+                        }
+                    })
+                    .catch(() => {
+                        showError('Network error. Please check your connection.');
+                    });
+                } else {
+                    // Simulate AJAX success
+                    setTimeout(() => {
+                        showSuccess();
+                    }, 1200);
+                }
+            } else {
+                showError('Please fill out all fields.');
+            }
+
+            function showSuccess() {
+                formStatus.textContent = 'Thank you! Your message has been sent successfully.';
                 formStatus.className = 'form-status success';
-                
-                window.location.href = `mailto:yashdedhia05@gmail.com?subject=${subject}&body=${body}`;
-                
+                contactForm.reset();
+                resetButton();
+            }
+
+            function showError(msg) {
+                formStatus.textContent = msg;
+                formStatus.className = 'form-status error';
+                resetButton();
+            }
+
+            function resetButton() {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                }
                 setTimeout(() => {
                     formStatus.textContent = '';
-                    contactForm.reset();
-                }, 3000);
-            } else {
-                formStatus.textContent = 'Please fill out all fields.';
-                formStatus.className = 'form-status error';
+                }, 5000);
             }
         });
     }
