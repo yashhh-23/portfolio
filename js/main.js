@@ -428,4 +428,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Read More Button Handler for Project Cards
+    document.querySelectorAll('.read-more-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.project-card');
+            const extendedDesc = card ? card.querySelector('.project-desc-extended') : null;
+            const btnText = btn.querySelector('.btn-text');
+            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+            if (extendedDesc) {
+                if (!isExpanded) {
+                    extendedDesc.removeAttribute('hidden');
+                    void extendedDesc.offsetWidth;
+                    extendedDesc.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                    if (btnText) btnText.textContent = 'Read Less';
+                } else {
+                    extendedDesc.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                    if (btnText) btnText.textContent = 'Read More';
+                    setTimeout(() => {
+                        if (btn.getAttribute('aria-expanded') === 'false') {
+                            extendedDesc.setAttribute('hidden', '');
+                        }
+                    }, 400);
+                }
+            }
+        });
+    });
+
 });

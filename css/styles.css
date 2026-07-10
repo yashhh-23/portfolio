@@ -1242,9 +1242,10 @@ footer {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    width: 90%;
-    max-width: 900px;
+    width: 95%;
+    max-width: 1000px;
     height: 85vh;
+    height: 85dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1264,6 +1265,33 @@ footer {
     justify-content: space-between;
     align-items: center;
     background: var(--nav-bg);
+}
+
+.modal-popout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.modal-popout-btn:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: rgba(0, 240, 255, 0.05);
+}
+
+@media (max-width: 480px) {
+    .modal-popout-btn .popout-text {
+        display: none;
+    }
 }
 
 .modal-header h3 {

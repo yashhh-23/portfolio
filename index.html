@@ -184,6 +184,7 @@
                 <li><a href="#about" class="nav-link" data-section="about">About</a></li>
                 <li><a href="#technologies" class="nav-link" data-section="technologies">Technologies</a></li>
                 <li><a href="#work" class="nav-link" data-section="work">Work</a></li>
+                <li><a href="#achievements" class="nav-link" data-section="achievements">Achievements</a></li>
                 <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
                 <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
             </ul>
@@ -439,15 +440,67 @@
         </section>
 
 
+        <!-- Achievements Section -->
+        <section id="achievements" class="section achievements-section">
+            <div class="container">
+                <h2 class="section-title">Achievements</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-content">
+                            <h3 class="project-title">Solo winner in Coral SQL Hackathon</h3>
+                            <a href="#matchmaker-project" class="project-link">View Project Details ↘</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Projects Section -->
         <section id="projects" class="section projects-section">
             <div class="container">
                 <h2 class="section-title">Key Engineering Projects</h2>
                 <div class="projects-grid">
+                    <!-- Project: GSoC & Open-Source Matchmaker Agent -->
+                    <div class="project-card featured-project" id="matchmaker-project">
+                        <div class="project-content">
+                            <div class="project-header">
+                                <h3 class="project-title">GSoC & Open-Source Matchmaker Agent</h3>
+                                <span class="project-badge">Featured AI Agent</span>
+                            </div>
+                            <div class="project-desc-container">
+                                <p class="project-desc">
+                                    Built an intelligent agent for GSoC aspirants that maps a user's LeetCode solved-problem tags (Graphs, DP, Trees, etc.) to active GitHub issues via federated cross-source SQL JOINs using the Coral MCP engine running inside Docker, bridging competitive programming skills with real open-source contribution opportunities.
+                                </p>
+                                <div class="project-desc-extended" hidden>
+                                    <p>
+                                        Engineered a multi-LLM reasoning pipeline (Gemini 2.5 Flash as primary, Groq and GPT-4o-Mini as fallbacks) that analyzes matched issues and generates actionable contribution pitches, served through a chat-based Next.js frontend (Vercel) with typing animations, markdown rendering, and a live schema explorer.
+                                    </p>
+                                </div>
+                                <button type="button" class="read-more-btn" aria-expanded="false">
+                                    <span class="btn-text">Read More</span>
+                                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                            </div>
+                            <div class="project-tags">
+                                <span>Coral MCP</span>
+                                <span>Gemini 2.5 Flash</span>
+                                <span>Groq Llama-3.3-70b</span>
+                                <span>Next.js</span>
+                                <span>Node.js</span>
+                                <span>Docker</span>
+                            </div>
+                            <div class="project-footer">
+                                <a href="https://open-source-matchmaker.vercel.app" target="_blank" class="project-link">Live Link ↗</a>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Project 1: AI Agent -->
                     <div class="project-card">
                         <div class="project-content">
-                            <h3 class="project-title">AI Agent Website</h3>
+                            <div class="project-header">
+                                <h3 class="project-title">AI Agent Website</h3>
+                            </div>
                             <p class="project-desc">
                                 An intelligent AI agent project leveraging modern language models for automation and interaction.
                             </p>
@@ -455,16 +508,19 @@
                                 <span>Next.js</span>
                                 <span>TypeScript</span>
                                 <span>Tailwind</span>
-                               
                             </div>
-                            <a href="https://github.com/yashhh-23/ai-agent" target="_blank" class="project-link">View on GitHub ↗</a>
+                            <div class="project-footer">
+                                <a href="https://github.com/yashhh-23/ai-agent" target="_blank" class="project-link">View on GitHub ↗</a>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Project 2: PDF Mergers -->
                     <div class="project-card">
                         <div class="project-content">
-                            <h3 class="project-title">PDF Mergers</h3>
+                            <div class="project-header">
+                                <h3 class="project-title">PDF Mergers</h3>
+                            </div>
                             <p class="project-desc">
                                 A utility tool for merging multiple PDF files into a single document efficiently.
                             </p>
@@ -473,14 +529,18 @@
                                 <span>Node.js</span>
                                 <span>JavaScript</span>
                             </div>
-                            <a href="https://github.com/yashhh-23/pdf-mergers" target="_blank" class="project-link">View on GitHub ↗</a>
+                            <div class="project-footer">
+                                <a href="https://github.com/yashhh-23/pdf-mergers" target="_blank" class="project-link">View on GitHub ↗</a>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Project 3: Amazon Landing Page -->
                     <div class="project-card">
                         <div class="project-content">
-                            <h3 class="project-title">Amazon Landing Page</h3>
+                            <div class="project-header">
+                                <h3 class="project-title">Amazon Landing Page</h3>
+                            </div>
                             <p class="project-desc">
                                 A high-fidelity clone of the Amazon landing page, showcasing advanced CSS and responsive design skills.
                             </p>
@@ -489,14 +549,18 @@
                                 <span>CSS</span>
                                 <span>Next.js</span>
                             </div>
-                            <a href="https://github.com/yashhh-23/Amazon-landing-page" target="_blank" class="project-link">View on GitHub ↗</a>
+                            <div class="project-footer">
+                                <a href="https://github.com/yashhh-23/Amazon-landing-page" target="_blank" class="project-link">View on GitHub ↗</a>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Project 4: Event Calendar -->
                     <div class="project-card">
                         <div class="project-content">
-                            <h3 class="project-title">Event Calendar</h3>
+                            <div class="project-header">
+                                <h3 class="project-title">Event Calendar</h3>
+                            </div>
                             <p class="project-desc">
                                 A modular event calendar application for scheduling and managing events.
                             </p>
@@ -505,7 +569,9 @@
                                 <span>TypeScript</span>
                                 <span>UI Component</span>
                             </div>
-                            <a href="https://github.com/yashhh-23/event-calendar" target="_blank" class="project-link">View on GitHub ↗</a>
+                            <div class="project-footer">
+                                <a href="https://github.com/yashhh-23/event-calendar" target="_blank" class="project-link">View on GitHub ↗</a>
+                            </div>
                         </div>
                     </div>
 
@@ -594,9 +660,15 @@
         <div class="modal-content cv-modal-content">
             <div class="modal-header">
                 <h3>Yash Dedhia - Resume</h3>
-                <button id="close-cv-modal" class="close-modal-btn" aria-label="Close CV Modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <a href="https://drive.google.com/file/d/1uXx196OVVw84BuhQaY_buS7ajrGo_wa3/view?usp=sharing" target="_blank" class="modal-popout-btn" aria-label="Open in new tab" title="Open in new tab">
+                        <span class="popout-text">Open in New Tab</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                    <button id="close-cv-modal" class="close-modal-btn" aria-label="Close CV Modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
             </div>
             <div class="modal-body">
                 <iframe src="https://drive.google.com/file/d/1uXx196OVVw84BuhQaY_buS7ajrGo_wa3/preview" width="100%" height="100%" allow="autoplay" title="Yash Dedhia Resume"></iframe>

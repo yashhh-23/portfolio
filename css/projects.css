@@ -1,26 +1,32 @@
 /* Projects Section */
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
+    align-items: stretch;
+}
+
+/* Achievements section specific grid */
+.achievements-section .projects-grid {
+    grid-template-columns: minmax(280px, 650px);
+    justify-content: center;
 }
 
 .project-card {
     background: var(--bg-secondary);
-    /* Distinctive dark grey */
     border: 1px solid var(--border-color);
-    /* Clearer border */
     padding: 30px;
     position: relative;
     transition: all 0.3s ease;
-    overflow: visible;
-    /* Prevent clipping */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 100%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
     z-index: 10;
     opacity: 0;
     transform: translateY(50px);
+    border-radius: 12px;
 }
 
 .project-card.visible {
@@ -29,25 +35,18 @@
     transition: opacity 0.8s ease, transform 0.8s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Spotlight dimming effect removed for visibility */
-/* Spotlight dimming effect removed for visibility */
-
 /* Spotlight Effect: Blur others when one is hovered */
 .projects-grid:has(.project-card:hover) .project-card:not(:hover) {
-    opacity: 0.4;
+    opacity: 0.45;
     filter: blur(3px);
-    transform: scale(0.98);
+    transform: scale(0.985);
 }
 
 .project-card:hover {
     transform: translateY(-5px);
     border-color: var(--accent-color);
-    box-shadow: 0 10px 30px -10px, rgba(0, 240, 255, 0.15);
+    box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.18);
 }
-
-/* Fallback for browsers not supporting :has (though wide support exists) 
-   We keep the previous logic disabled or ensure base styles are visible 
-*/
 
 /* Disable spotlight effect on touch-only devices (iOS, Android) */
 @media (hover: none) and (pointer: coarse) {
@@ -75,30 +74,117 @@
     transition: transform 0.6s ease;
 }
 
-/* Old hover effect removed to avoid conflict with spotlight */
-
 .project-card:hover::before {
     transform: translateX(100%);
 }
 
+.project-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.project-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--accent-color);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    white-space: nowrap;
+}
+
 .project-title {
     font-size: 1.4rem;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.project-header .project-title {
+    margin-bottom: 0;
+}
+
+.project-desc-container {
+    margin-bottom: 24px;
 }
 
 .project-desc {
     color: var(--text-secondary);
     font-size: 0.95rem;
-    margin-bottom: 25px;
-    flex-grow: 1;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+.project-desc-extended {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-top 0.4s ease;
+}
+
+.project-desc-extended.open {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 14px;
+}
+
+.project-desc-extended p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+.read-more-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    transition: all 0.3s ease;
+}
+
+.read-more-btn:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.read-more-btn .chevron-icon {
+    transition: transform 0.3s ease;
+}
+
+.read-more-btn[aria-expanded="true"] .chevron-icon {
+    transform: rotate(180deg);
 }
 
 .project-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 25px;
+    gap: 8px;
+    margin-top: auto;
+    margin-bottom: 24px;
 }
 
 .project-tags span {
@@ -108,6 +194,13 @@
     border: 1px solid var(--border-color);
     border-radius: 20px;
     color: var(--text-secondary);
+}
+
+.project-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 4px;
 }
 
 .project-link {
@@ -123,28 +216,42 @@
 }
 
 /* ===== Projects Responsive ===== */
-@media (max-width: 768px) {
+@media (min-width: 992px) {
+    .project-card.featured-project {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 991px) and (min-width: 641px) {
     .projects-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
     }
 
+    .project-card.featured-project {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
     .project-card {
         padding: 24px;
     }
 
     .project-title {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
+        font-size: 1.25rem;
     }
 
     .project-desc {
         font-size: 0.9rem;
-        margin-bottom: 20px;
+    }
+
+    .project-desc-extended p {
+        font-size: 0.9rem;
     }
 
     .project-tags {
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 20px;
     }
 
@@ -157,11 +264,21 @@
         font-size: 0.85rem;
     }
 
-    /* Disable spotlight blur on mobile (hover doesn't apply well on touch) */
     .projects-grid:has(.project-card:hover) .project-card:not(:hover) {
         opacity: 1;
         filter: none;
         transform: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .project-card.featured-project {
+        grid-column: span 1;
     }
 }
 
@@ -172,12 +289,11 @@
     }
 
     .project-title {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
     }
 
     .project-desc {
         font-size: 0.85rem;
-        margin-bottom: 16px;
     }
 
     .project-tags span {
