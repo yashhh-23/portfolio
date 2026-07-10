@@ -379,6 +379,50 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
             const submitBtn = contactForm.querySelector('.btn-submit');
+
+            // Rate Limiting Check via localStorage
+            const STORAGE_KEY = 'contact_form_rate_limit';
+            let rateData = { submissions: [], restricted: false };
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) rateData = JSON.parse(stored);
+            } catch (err) {
+                console.warn('localStorage access error', err);
+            }
+
+            // Check if device is restricted (3 submissions reached across 3 days)
+            if (rateData.restricted) {
+                showError('Device restricted: You have reached the limit of 3 submissions across 3 days.');
+                return;
+            }
+
+            const now = Date.now();
+            const ONE_DAY = 24 * 60 * 60 * 1000;
+            const THREE_DAYS = 3 * ONE_DAY;
+
+            // Keep only submissions within the last 3 days
+            rateData.submissions = (rateData.submissions || []).filter(ts => (now - ts) <= THREE_DAYS);
+
+            // Check if 3 submissions threshold is already met
+            if (rateData.submissions.length >= 3) {
+                rateData.restricted = true;
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(rateData));
+                } catch (err) {}
+                showError('Device restricted: You have reached the limit of 3 submissions across 3 days.');
+                return;
+            }
+
+            // Check if already submitted today (within 24 hours or same calendar day)
+            if (rateData.submissions.length > 0) {
+                const lastSub = rateData.submissions[rateData.submissions.length - 1];
+                const isSameCalendarDay = new Date(lastSub).toDateString() === new Date(now).toDateString();
+                const isWithin24Hours = (now - lastSub) < ONE_DAY;
+                if (isSameCalendarDay || isWithin24Hours) {
+                    showError('Rate limit exceeded: Only 1 message is allowed per day from this device. Please try again tomorrow.');
+                    return;
+                }
+            }
             
             if (name && email && message) {
                 // Visual Loading State
@@ -414,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     })
                     .catch(() => {
                         showError('Network error. Please check your connection.');
-                    });
+                        });
                 } else {
                     // Simulate AJAX success
                     setTimeout(() => {
@@ -426,6 +470,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             function showSuccess() {
+                // Record successful submission in rate limit storage
+                try {
+                    rateData.submissions.push(Date.now());
+                    if (rateData.submissions.length >= 3) {
+                        rateData.restricted = true;
+                    }
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(rateData));
+                } catch (err) {
+                    console.warn('Could not update rate limit storage', err);
+                }
+
                 formStatus.textContent = 'Thank you! Your message has been sent successfully.';
                 formStatus.className = 'form-status success';
                 contactForm.reset();
