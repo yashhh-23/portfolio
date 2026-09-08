@@ -190,7 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const addMessage = (message, sender, shouldSave = true) => {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender);
-        messageDiv.innerHTML = message;
+        if (sender === 'user') {
+            messageDiv.textContent = message;
+        } else {
+            messageDiv.innerHTML = message;
+        }
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
         if (shouldSave) {
