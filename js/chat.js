@@ -237,6 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const chatHeaderCloseBtn = document.getElementById('chat-header-close-btn');
+    if (chatHeaderCloseBtn && chatContainer) {
+        chatHeaderCloseBtn.addEventListener('click', () => {
+            chatContainer.classList.remove('open');
+        });
+    }
+
     if(chatSendBtn) {
         chatSendBtn.addEventListener('click', handleSend);
     }

@@ -1191,29 +1191,7 @@ footer {
     box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
 }
 
-/* About Feature Image */
-.about-image {
-    width: 100%;
-    margin-top: 30px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
-.about-image:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 240, 255, 0.15);
-    border-color: rgba(0, 240, 255, 0.3);
-}
-
-.about-feature-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-}
 
 /* Tech Icons */
 .tech-icon {
@@ -1399,7 +1377,9 @@ footer {
     text-align: center;
     margin-top: -10px;
     font-size: 0.9rem;
-    height: 20px;
+    min-height: 20px;
+    height: auto;
+    word-break: break-word;
 }
 
 .form-status.success {
@@ -1412,6 +1392,40 @@ footer {
 
 .form-status.loading {
     color: var(--accent-color);
+}
+
+/* Modal Loader Spinner */
+.modal-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Mobile Responsive Overrides */

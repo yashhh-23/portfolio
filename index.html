@@ -194,9 +194,9 @@
                     <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
                 <button class="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
                 </button>
             </div>
         </nav>
@@ -678,8 +678,13 @@
     <div id="chatbot-container" class="chatbot-container">
         <div class="chat-window">
             <div class="chat-header">
-                <h3>Chat with Yash's Bot</h3>
-                <span class="status">● Online</span>
+                <div>
+                    <h3 style="margin:0; line-height: 1.2;">Chat with Yash's Bot</h3>
+                    <span class="status">● Online</span>
+                </div>
+                <button id="chat-header-close-btn" class="chat-header-close-btn" aria-label="Close chat window">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
             <div class="chat-messages" id="chat-messages">
                 <!-- Messages will be injected here -->
@@ -715,7 +720,11 @@
                 </div>
             </div>
             <div class="modal-body">
-                <iframe src="https://drive.google.com/file/d/1uXx196OVVw84BuhQaY_buS7ajrGo_wa3/preview" width="100%" height="100%" allow="autoplay" title="Yash Dedhia Resume"></iframe>
+                <div id="cv-modal-loader" class="modal-loader">
+                    <div class="modal-spinner"></div>
+                    <span>Loading Resume...</span>
+                </div>
+                <iframe id="cv-iframe" src="https://drive.google.com/file/d/1uXx196OVVw84BuhQaY_buS7ajrGo_wa3/preview" width="100%" height="100%" allow="autoplay" title="Yash Dedhia Resume"></iframe>
             </div>
         </div>
     </div>

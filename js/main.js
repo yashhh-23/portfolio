@@ -103,9 +103,16 @@ let particles = [];
 let animationId = null;
 let isTabVisible = true;
 
+let isMobile = window.innerWidth <= 768;
+
 function resize() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
+    const wasMobile = isMobile;
+    isMobile = window.innerWidth <= 768;
+    if (wasMobile !== isMobile && particles.length > 0) {
+        initParticles();
+    }
 }
 window.addEventListener("resize", resize);
 resize();
@@ -148,13 +155,14 @@ class Particle {
     }
 }
 
-// Adaptive particle count: fewer on mobile for battery/performance
-const isMobile = window.innerWidth <= 768;
-const particleCount = isMobile ? 20 : 50;
+function getParticleCount() {
+    return isMobile ? 20 : 50;
+}
 
 function initParticles() {
     particles = [];
-    for (let i = 0; i < particleCount; i++) {
+    const count = getParticleCount();
+    for (let i = 0; i < count; i++) {
         particles.push(new Particle());
     }
 }
@@ -509,6 +517,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewCvBtn = document.getElementById('view-cv-btn');
     const cvModal = document.getElementById('cv-modal');
     const closeCvModalBtn = document.getElementById('close-cv-modal');
+    const cvIframe = document.getElementById('cv-iframe');
+    const cvLoader = document.getElementById('cv-modal-loader');
+
+    if (cvIframe && cvLoader) {
+        cvIframe.addEventListener('load', () => {
+            cvLoader.classList.add('hidden');
+        });
+    }
 
     if (viewCvBtn && cvModal && closeCvModalBtn) {
         const openModal = (e) => {
