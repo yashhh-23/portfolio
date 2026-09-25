@@ -1317,16 +1317,16 @@ footer {
 .modal-body {
     flex-grow: 1;
     position: relative;
-    background: #333;
+    background: var(--bg-secondary);
     overflow: hidden;
 }
 
 .modal-body iframe {
     position: absolute;
-    top: -55px; /* Hides Google Drive's default top toolbar */
+    top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% + 55px);
+    height: 100%;
     border: none;
 }
 
