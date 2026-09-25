@@ -535,6 +535,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 cvModal.classList.add('open');
             });
             document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                if (cvLoader) cvLoader.classList.add('hidden');
+            }, 400);
         };
 
         const closeModal = () => {
